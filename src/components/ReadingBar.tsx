@@ -26,7 +26,7 @@ const ReadingBar = ({ value }: Props) => {
       barRef.current.style.background = bgColor;
       barRef.current.style.width = `${scaledValue}px`;
     }
-  }, []);
+  }, [value]);
 
   return <div className="rounded-xl" ref={barRef}></div>;
 };
