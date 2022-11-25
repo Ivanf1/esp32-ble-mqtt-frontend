@@ -1,5 +1,6 @@
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import ReadingBar from "./ReadingBar";
+import analogReadSubject from "../subjects/AnalogReadSubject";
 
 interface AnalogReadProps {
   device: BluetoothDevice | null;
@@ -14,15 +15,16 @@ const swap32 = (val: number) => {
 const AnalogRead = ({ device }: AnalogReadProps) => {
   const [readingValue, setReadingValue] = useState<number>(0);
 
-  const handleNotifications = useCallback((e: Event) => {
+  const handleNotifications = (e: Event) => {
     if (e.target) {
       let value = (e.target as BluetoothRemoteGATTCharacteristic).value;
       if (value !== undefined) {
         let intValue = swap32(value.getUint32(0));
         setReadingValue(intValue);
+        analogReadSubject.updateReading(intValue);
       }
     }
-  }, []);
+  };
 
   useEffect(() => {
     const subscribeToDeviceAnalogReading = async (device: BluetoothDevice) => {
@@ -32,10 +34,8 @@ const AnalogRead = ({ device }: AnalogReadProps) => {
         const analogReadingService = await server.getPrimaryService(0x00ff);
 
         const analogCharacteristic = await analogReadingService.getCharacteristic(0xff01);
-
         analogCharacteristic.addEventListener("characteristicvaluechanged", handleNotifications);
         analogCharacteristic.startNotifications();
-        console.log("-------------- Notifications started");
       }
     };
 

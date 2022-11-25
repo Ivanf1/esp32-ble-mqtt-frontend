@@ -10,21 +10,21 @@ const scale = (value: number, inMin: number, inMax: number, outMin: number, outM
 
 const ReadingBar = ({ value }: Props) => {
   const barRef = useRef<HTMLDivElement | null>(null);
-  let scaledValue = scale(value, 0, 4095, 0, 512);
+  let scaledValue = scale(value, 0, 4095, 0, 100);
 
   useEffect(() => {
     if (barRef.current) {
       let bgColor = "";
-      if (scaledValue >= 0 && scaledValue <= 380) {
+      if (scaledValue >= 0 && scaledValue <= 65) {
         bgColor = "#43f70c";
-      } else if (scaledValue > 380 && scaledValue < 460) {
+      } else if (scaledValue > 65 && scaledValue < 85) {
         bgColor = "#fcba04";
       } else {
         bgColor = "#e3170a";
       }
 
       barRef.current.style.background = bgColor;
-      barRef.current.style.width = `${scaledValue}px`;
+      barRef.current.style.width = `${scaledValue}%`;
     }
   }, [value]);
 
